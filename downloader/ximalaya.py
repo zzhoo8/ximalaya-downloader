@@ -11,3 +11,4 @@ if __name__ == '__main__':
     album_id = '7785486'
     album = Album(id=album_id)
     album.from_ximalaya()
+    album.download()
