@@ -53,9 +53,11 @@ class Album(object):
         p = 1
         while p <= math.ceil(track_count / 30):
             print('专辑 %s 第 %d 页的声音列表' % (self.id, p))
-            resp = requests.get(url='%s/p%d' % (self.url, p), headers=headers, allow_redirects=True)
+            print('%sp%d' % (self.url, p))
+            resp = requests.get(url='%sp%d' % (self.url, p), headers=headers, allow_redirects=True)
             if resp.status_code != 200:
                 raise BusinessException(Error.XIMALAYA_ERROR)
+            dom = pq(resp.text)
             # id = anchor_sound_list
             dom = dom('#anchor_sound_list')
             track_doms = dom('ul li')
@@ -73,6 +75,7 @@ class Album(object):
                 track.play_path = resp.get('play_path')
                 tracks.append(track)
             p += 1
+        print('专辑 %s 共找到 %d 声音' % (self.id, len(tracks)))
         self.tracks = tracks
 
     def download(self):
@@ -86,7 +89,7 @@ class Album(object):
         except Exception as e:
             print(e)
         for track in self.tracks:
-            # print(track.play_path)
+            # print('%s %s' % (track.title, track.play_path))
             track.download()
 
 
