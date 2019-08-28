@@ -24,13 +24,11 @@ Github搜到的下载工具都巨不靠谱，不是没有说明就是无法运�
 
 ### 命令行
 
-需要修改ximalaya.py，去掉注释即可。
+`python -m run.py https://www.ximalaya.com/lishi/6703398/`
 
-`python -m ximalaya.py https://www.ximalaya.com/lishi/6703398/`
+### 专辑url写到程序变量中
 
-### 专辑id写程序中
-
-保留ximalaya.py的注释，`album = Album(url='https://www.ximalaya.com/lishi/6703398/')`修改成其他即可。
+修改`run.py`，`album = Album(url='https://www.ximalaya.com/lishi/6703398/')`修改成其它专辑url即可。
 
 ### 运行结果
 
