@@ -14,6 +14,8 @@ Github搜到的下载工具都巨不靠谱，不是没有说明就是无法运�
 
 ```bash
 ➜  ximalaya-downloader git:(develop) python3.6 -m venv venv
+➜  ximalaya-downloader git:(develop) source venv/bin/activate
+(venv) ➜  ximalaya-downloader git:(develop)  
 ```
 
 ## 运行  
