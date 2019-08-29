@@ -2,6 +2,7 @@
 
 > 喜马拉雅网址 https://www.ximalaya.com/
 
+* 20190829 喜马拉雅网页调整，重新寻找定位元素
 * 20190827 修复不能翻页bug
 * 20190826 支持声音数30以上的专辑
 
@@ -24,11 +25,19 @@ Github搜到的下载工具都巨不靠谱，不是没有说明就是无法运�
 
 ### 命令行
 
-`python -m run.py https://www.ximalaya.com/lishi/6703398/`
+`python run.py https://www.ximalaya.com/lishi/6703398/`
 
 ### 专辑url写到程序变量中
 
 修改`run.py`，`album = Album(url='https://www.ximalaya.com/lishi/6703398/')`修改成其它专辑url即可。
+```bash
+(venv) ➜  ximalaya-downloader git:(develop) ✗ python run.py
+专辑 6703398 共有 46 声音
+专辑 6703398 第 1 页的声音列表
+https://www.ximalaya.com/lishi/6703398/p1
+专辑 6703398 第 2 页的声音列表
+https://www.ximalaya.com/lishi/6703398/p2
+```
 
 ### 运行结果
 

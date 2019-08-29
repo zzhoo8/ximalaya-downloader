@@ -44,7 +44,7 @@ class Album(object):
         # id = anchor_sound_list
         dom = dom('#anchor_sound_list')
         # 一页30单曲, 专辑共有声音数, 用来计算分页
-        track_count = dom('._yo5_')
+        track_count = dom('._tr')
         track_count = re.search('\(\\d+\)', track_count.text())[0]
         track_count = int(track_count[1:-1])
         print('专辑 %s 共有 %d 声音' % (self.id, track_count))
