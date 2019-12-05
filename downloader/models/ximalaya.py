@@ -60,15 +60,19 @@ class Album(object):
             dom = pq(resp.text)
             # id = anchor_sound_list
             dom = dom('#anchor_sound_list')
-            track_doms = dom('ul li')
+            track_doms = dom('ul li._c2')
             for track_dom in track_doms:
                 track = Track()
                 _dom = pq(track_dom)('a')
+                # print(_dom)
                 track.id = _dom.attr('href').split('/')[3]
                 track.title = _dom('.title').text()
 
                 # http://www.ximalaya.com/tracks/36107141.json有声音下载地址
-                resp = requests.get(url='http://www.ximalaya.com/tracks/%s.json' % track.id, headers=headers)
+                _url = 'http://www.ximalaya.com/tracks/%s.json' % track.id
+                # print(_url)
+                resp = requests.get(url=_url, headers=headers)
+                # print(resp.text)
                 if resp.status_code != 200:
                     continue
                 resp = resp.json()

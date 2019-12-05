@@ -9,7 +9,7 @@ if __name__ == '__main__':
         url = sys.argv[1]
     else:
         # 直接写专辑url到变量中
-        url = 'https://www.ximalaya.com/renwen/7785486/'
+        url = 'https://www.ximalaya.com/lishi/11538383/'
     album = Album(url=url)
     album.from_ximalaya()
     album.download()
