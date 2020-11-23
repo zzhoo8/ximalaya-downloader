@@ -33,40 +33,55 @@ class Album(object):
         if not self.url:
             raise BusinessException(Error.ALBUM_ERROR)
         self.id = re.search('\\d+', self.url)[0]
-        # 301跳转
-        # curl -L 'https://www.ximalaya.com/album/xxx'
-        resp = requests.get(url=self.url, headers=headers, allow_redirects=True)
+        # 声音数据改到接口 https://www.ximalaya.com/revision/album?albumId=11538383 中
+        resp = requests.get(url='https://www.ximalaya.com/revision/album?albumId=%s' % self.id, headers=headers, allow_redirects=True)
         if resp.status_code != 200:
             raise BusinessException(Error.XIMALAYA_ERROR)
-        dom = pq(resp.text)
+        # # dom = pq(resp.text)
+        # # 专辑标题
+        # self.title = dom('h1.title').text()
+        # # id = anchor_sound_list
+        # dom = dom('#anchor_sound_list')
+        # # 一页30单曲, 专辑共有声音数, 用来计算分页
+        # track_count = dom('.head h2')
+        # track_count = re.search('\(\\d+\)', track_count.text())[0]
+        # track_count = int(track_count[1:-1])
+        # print('专辑 %s 共有 %d 声音' % (self.id, track_count))
+
+        # json结构
+        resp = resp.json()
+        _data = resp.get('data')
         # 专辑标题
-        self.title = dom('h1.title').text()
-        # id = anchor_sound_list
-        dom = dom('#anchor_sound_list')
-        # 一页30单曲, 专辑共有声音数, 用来计算分页
-        track_count = dom('.head h2')
-        track_count = re.search('\(\\d+\)', track_count.text())[0]
-        track_count = int(track_count[1:-1])
+        self.title = _data.get('mainInfo').get('albumTitle')
+        track_count = int(_data.get('tracksInfo').get('trackTotalCount'))
         print('专辑 %s 共有 %d 声音' % (self.id, track_count))
 
         tracks = list()
         p = 1
-        while p <= math.ceil(track_count / 30):
+        size = int(_data.get('tracksInfo').get('pageSize'))
+        while p <= math.ceil(track_count / size):
             print('专辑 %s 第 %d 页的声音列表' % (self.id, p))
             print('%sp%d' % (self.url, p))
-            resp = requests.get(url='%sp%d' % (self.url, p), headers=headers, allow_redirects=True)
+            # 每一页声音在 https://www.ximalaya.com/revision/album/v1/getTracksList?albumId=11538383&pageNum=1 中
+            resp = requests.get(url='https://www.ximalaya.com/revision/album/v1/getTracksList?albumId=%s&pageNum=%d' % (self.id, p), headers=headers, allow_redirects=True)
             if resp.status_code != 200:
                 raise BusinessException(Error.XIMALAYA_ERROR)
-            dom = pq(resp.text)
+            # dom = pq(resp.text)
             # id = anchor_sound_list
-            dom = dom('#anchor_sound_list')
-            track_doms = dom('ul li._c2')
+            # dom = dom('#anchor_sound_list')
+            # track_doms = dom('ul li._c2')
+            resp = resp.json()
+            _data = resp.get('data')
+            track_doms = _data.get('tracks')     # list
             for track_dom in track_doms:
                 track = Track()
-                _dom = pq(track_dom)('a')
+                # _dom = pq(track_dom)('a')
                 # print(_dom)
-                track.id = _dom.attr('href').split('/')[3]
-                track.title = _dom('.title').text()
+                # track.id = _dom.attr('href').split('/')[3]
+                # track.title = _dom('.title').text()
+
+                track.id = track_dom.get('trackId')
+                track.title = track_dom.get('title')
 
                 # http://www.ximalaya.com/tracks/36107141.json有声音下载地址
                 _url = 'http://www.ximalaya.com/tracks/%s.json' % track.id
@@ -78,7 +93,7 @@ class Album(object):
                 resp = resp.json()
                 track.play_path = resp.get('play_path')
                 tracks.append(track)
-            p += 1
+            p += 1      # 翻页
         print('专辑 %s 共找到 %d 声音' % (self.id, len(tracks)))
         self.tracks = tracks
 
